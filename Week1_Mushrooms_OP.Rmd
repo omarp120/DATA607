@@ -1,0 +1,42 @@
+---
+title: "Week 1: Mushrooms"
+name: Omar Pineda
+output: html_document
+---
+
+First, we load the data from the online source and save it as a data frame. We then subset it to four variables, name those columns, and replace the abbreviations with full descriptional values.
+
+```{r transformations}
+src <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data'
+mush <- read.csv(url(src), header=FALSE, stringsAsFactors = FALSE)
+mushroom <- as.data.frame(mush)
+newMush <- mushroom[c(1,19, 22:23)] #subset the data, keeping four columns
+names(newMush) <- c("classes", "ringNumber", "population", "habitat") 
+#renaming the values based on the provided data dictionary
+newMush$classes[newMush$classes=='p'] <- 'poisonous'
+newMush$classes[newMush$classes=='e'] <- 'edible'
+newMush$ringNumber[newMush$ringNumber=='n'] <- 'none'
+newMush$ringNumber[newMush$ringNumber=='o'] <- 'one'
+newMush$ringNumber[newMush$ringNumber=='t'] <- 'two'
+newMush$population[newMush$population=='a'] <- 'abundant'
+newMush$population[newMush$population=='c'] <- 'clustered'
+newMush$population[newMush$population=='n'] <- 'numerous'
+newMush$population[newMush$population=='s'] <- 'scattered'
+newMush$population[newMush$population=='v'] <- 'several'
+newMush$population[newMush$population=='y'] <- 'solitary'
+newMush$habitat[newMush$habitat=='g'] <- 'grasses'
+newMush$habitat[newMush$habitat=='l'] <- 'leaves'
+newMush$habitat[newMush$habitat=='m'] <- 'meadows'
+newMush$habitat[newMush$habitat=='p'] <- 'paths'
+newMush$habitat[newMush$habitat=='u'] <- 'urban'
+newMush$habitat[newMush$habitat=='w'] <- 'waste'
+newMush$habitat[newMush$habitat=='d'] <- 'woods'
+head(newMush)
+```
+
+Looking at contingency tables, it seems that the population type with the largest number of poisonous mushrooms is 'several', and the habitat with the largest number of poisonous mushrooms is 'woods'.
+
+```{r explore}
+table(newMush$classes, newMush$population)
+table(newMush$classes, newMush$habitat)
+```
