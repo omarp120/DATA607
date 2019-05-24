@@ -1,0 +1,83 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.5
+-- Dumped by pg_dump version 11.1
+
+-- Started on 2019-02-03 15:45:57 EST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 196 (class 1259 OID 16432)
+-- Name: ratings; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.ratings (
+    title character(80),
+    person integer,
+    rating integer
+);
+
+
+ALTER TABLE public.ratings OWNER TO postgres;
+
+--
+-- TOC entry 3117 (class 0 OID 16432)
+-- Dependencies: 196
+-- Data for Name: ratings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.ratings (title, person, rating) FROM stdin;
+Spider-Man: Into the Spider-Verse                                               	1	2
+If Beale Street Could Talk                                                      	1	4
+A Dog's Way Home                                                                	1	5
+Escape Room                                                                     	1	1
+A Star is Born                                                                  	1	3
+Roma                                                                            	1	2
+Spider-Man: Into the Spider-Verse                                               	2	5
+If Beale Street Could Talk                                                      	2	1
+A Dog's Way Home                                                                	2	5
+Escape Room                                                                     	2	3
+A Star is Born                                                                  	2	3
+Roma                                                                            	2	2
+Spider-Man: Into the Spider-Verse                                               	3	3
+If Beale Street Could Talk                                                      	3	5
+A Dog's Way Home                                                                	3	5
+Escape Room                                                                     	3	2
+A Star is Born                                                                  	3	4
+Roma                                                                            	3	3
+Spider-Man: Into the Spider-Verse                                               	4	1
+If Beale Street Could Talk                                                      	4	5
+A Dog's Way Home                                                                	4	5
+Escape Room                                                                     	4	2
+A Star is Born                                                                  	4	4
+Roma                                                                            	4	4
+Spider-Man: Into the Spider-Verse                                               	5	4
+If Beale Street Could Talk                                                      	5	2
+A Dog's Way Home                                                                	5	3
+Escape Room                                                                     	5	4
+A Star is Born                                                                  	5	4
+Roma                                                                            	5	3
+\.
+
+
+-- Completed on 2019-02-03 15:45:58 EST
+
+--
+-- PostgreSQL database dump complete
+--
+

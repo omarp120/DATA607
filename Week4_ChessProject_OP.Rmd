@@ -1,0 +1,53 @@
+---
+title: "Week4_ChessProject_OP"
+author: "Omar Pineda"
+date: "2/14/2019"
+output: html_document
+---
+
+First, we load our data and prepare it by separating contestant's information from their rating list.
+
+```{r loading}
+chess <- read.csv(file="/Users/omarpineda/Desktop/CUNY SPS MS Data Science/DATA607 Data Acquisition and Management/Week 4/tournamentinfo.txt", header=FALSE)
+head(chess)
+chess <- chess[c(5:196),] #removes the first four rows
+contestant <- chess[seq(1, length(chess), 3)]
+contestant2 <- chess[seq(2, length(chess), 3)]
+head(contestant)
+head(contestant2)
+```
+Next, we use regular expressions to extract the needed information from our data.
+
+```{r stringExtracts}
+library(stringr)
+name <- str_trim(str_extract(contestant, "(\\w+\\s){2,3}"))
+state <- str_extract(contestant2, "\\w+")
+totalPoints <- as.numeric(str_extract(contestant, "\\d\\.\\d"))
+preRating <- str_extract(contestant2, "[^\\d]\\d{3,4}[^\\d]")
+preRating <- as.numeric(str_extract(preRating, "\\d+")) #removes possible characters in the pre-rating
+opponents <- str_extract_all(contestant, "\\d+\\|")
+opponents <- str_extract_all(opponents, "\\d+") #removes trailing pipe from the opponent's number
+```
+We then calculate the average pre-chess rating of opponents for each contestant.
+
+```{r avgOpp}
+avgOpp <- 0
+for (i in 1:length(contestant)) {     #go through each of our contestants
+  opp <- as.numeric(unlist(opponents[[i]]))   #save each contestant's opponents into a list
+  sum <- 0
+  for (n in 1:length(opp)) {  #go through each opponent in the contestant's list of opponents
+    sum <- sum + preRating[opp[n]]  #add up all of the opponents' corresponding pre-ratings
+  }
+  avgOpp[i] <- sum / length(opp)  #find the average pre-rating for each contestant's opponents
+}
+avgOpp <- round(avgOpp, digits = 0)
+avgOpp
+```
+
+Finally, we save all of our vectors into a data frame and generate a CSV.
+
+```{r consolidate}
+chessFinal <- data.frame(name, state, totalPoints, preRating, avgOpp)
+chessFinal
+write.csv(chessFinal, 'chess.csv')
+```

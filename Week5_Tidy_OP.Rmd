@@ -1,0 +1,48 @@
+---
+title: "Tidying and Transforming Data"
+author: "Omar Pineda"
+date: "2/25/2019"
+output: html_document
+---
+
+(1) Create a .CSV file (or optionally, a MySQL database!) that includes all of the information above.
+You’re encouraged to use a “wide” structure similar to how the information appears above, so
+that you can practice tidying and transformations as described below.
+
+(2) Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy
+and transform your data. 
+
+First, we load our data into R.
+
+```{r loading}
+library(tidyr)
+library(plyr)
+getwd()
+flights <- read.csv(file="/Users/omarpineda/Desktop/CUNY SPS MS Data Science/DATA607 Data Acquisition and Management/Week 5/flights.csv", header = TRUE)
+flights <- flights[-c(3),]  #removes empty row
+flights
+```
+
+Next, we tidy our data so that it is easier to consume.
+
+```{r tidyTransform}
+colnames(flights)[1:2] <- c("airline", "flightStatus")
+flights
+newFlights <- gather(flights, "City", "val", 3:7) %>%
+              spread(flightStatus, val)
+newFlights
+```
+
+(3) Perform analysis to compare the arrival delays for the two airlines.
+
+Now we do some analysis on our data using ggplot2.
+
+```{r analysis}
+library(ggplot2)
+newFlights$totalFlights <- newFlights$delayed + newFlights$`on time`
+newFlights$percentDelayed <- newFlights$delayed / newFlights$totalFlights
+newFlights
+ggplot(newFlights, aes(x = City, y=percentDelayed)) + geom_point(stat = "identity", aes(color = airline)) + ylab("Percentage of Delayed Flights")
+```
+
+AM West has a higher percentage of its flights delayed at every airport compared to Alaska Airlines. Phoenix has the lowest percentage of delayed flights and San Francisco has the highest percentage of delayed flights overall.

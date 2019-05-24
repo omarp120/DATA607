@@ -1,0 +1,28 @@
+---
+title: "Week9_API"
+author: "Omar Pineda"
+date: "3/26/2019"
+output: html_document
+---
+
+The New York Times web site provides a rich set of APIs, as described here: http://developer.nytimes.com/docs. We chose the New York Times' Books API, constructed an interface in R to read in the JSON data, and transformed it to an R dataframe.
+
+First, we pull in our data from the API using our API key.
+
+```{r load}
+library(RCurl)
+key <- "TPSygBadMHg7XTCodHE1xq3eSbQVsgLh"
+url <- "https://api.nytimes.com/svc/books/v3/lists/best-sellers/history.json"
+pull <- getURL(paste0(url,'?api-key=', key))
+pull
+```
+
+Next, and finally, we convert our JSON file into a dataframe using the JSONLite package.
+
+```{r }
+library(jsonlite)
+booksJSON <- fromJSON(pull)[[4]]
+typeof(booksJSON)
+booksJSON
+```
+

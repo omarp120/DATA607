@@ -1,0 +1,39 @@
+---
+title: "Week7_WebTech_OP"
+author: "Omar Pineda"
+date: "3/11/2019"
+output: html_document
+---
+
+In this assignment, we will practice loading unstructured data from different file types. First, we load in our books data from an HTML table:
+
+```{r htmlLoad}
+library(RCurl)
+library(XML)
+link <- "https://raw.githubusercontent.com/omarp120/DATA607Week7/master/books.html"
+booksHTML <- readHTMLTable(getURL(link))[[1]]
+booksHTML
+```
+
+Next, we load these same books from a JSON file:
+
+```{r jsonLoad}
+library(jsonlite)
+link2 <- "https://raw.githubusercontent.com/omarp120/DATA607Week7/master/books.json"
+booksJSON <- fromJSON(link2)[[1]]
+booksJSON
+```
+
+Finally, we load these books from an XML file:
+
+```{r xmlLoad}
+library(XML)
+library(plyr)
+link3 <- "https://raw.githubusercontent.com/omarp120/DATA607Week7/master/books.xml"
+books <- xmlParse(getURL(link3), useInternalNodes = TRUE, validate = FALSE)
+booksXML <- ldply(xmlToList(books), data.frame)
+booksXML <- booksXML[,2:5] #removes first column, which is an id
+booksXML
+```
+
+The tables are slightly different, some containing additional columns than others. Also, the XML and HTML tables' elements have data type 'fctr' while the JSON table's elements are 'chr'.

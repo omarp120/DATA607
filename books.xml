@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<books>
+    <book>
+        <Title>Circle K Cycles</Title>
+        <Authors>Karen Tei. Yamashita</Authors>
+        <Year>2001</Year>
+        <Publisher>Coffee House Press</Publisher>
+    </book>
+    <book>
+        <Title>Japanese Diasporas : Unsung Pasts, Conflicting Presents, and Uncertain Futures</Title>
+        <Authors>Nobuko Adachi</Authors>
+        <Year>2006</Year>
+        <Publisher>Routledge</Publisher>
+    </book>
+    <book>
+        <Title>New Worlds, New Lives : Globalization and People of Japanese Descent in the Americas and from Latin America in Japan</Title>
+        <Authors>Lane Ryo Hirabayashi, Akemi Kikumura-Yano</Authors>
+        <Year>2002</Year>
+        <Publisher>Stanford University Press</Publisher>
+    </book>
+</books>

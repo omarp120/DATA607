@@ -1,0 +1,102 @@
+---
+title: "Week12_Neo4j_OP"
+author: "Omar Pineda"
+date: "4/21/2019"
+output: html_document
+---
+
+In this assignment, we will take our flights relational database and migrate it to a Neo4j NoSQL database.
+
+First, we will load in our flights and airports tables that are used in a relational database.
+
+```{r load}
+flights <- read.csv(file='https://raw.githubusercontent.com/omarp120/DATA607Week12/master/flights.csv')
+airports <- read.csv(file='https://raw.githubusercontent.com/omarp120/DATA607Week12/master/airports.csv')
+airports <- airports[1:4,] #trim the excess rows from our table
+```
+
+Next, we initiate our Neo4j graph database.
+
+```{r load2}
+library(RNeo4j)
+
+graph = startGraph("http://localhost:7474/db/data/",
+                   username = 'neo4j',
+                   password = 'neo4j1')
+clear(graph, input = FALSE)
+```
+
+We then create our flights nodes. Attributes: flight number, airline, origin and destination.
+
+```{r flightsNodes}
+q <- 'CREATE (a:flights {flight: {flight}, airline: {airline}, origin: {origin}, destination: {destination}})'
+
+t = newTransaction(graph)
+
+for(i in 1:length(flights$flight)) {
+    flight = flights[i,]$flight
+    airline = flights[i,]$airline
+    origin = flights[i,]$depart
+    destination = flights[i,]$arrive 
+    appendCypher(t, q, flight = flight, airline = airline, origin = origin, destination = destination)
+}
+commit(t)
+```
+
+We also create nodes for our airports. Attributes: airport iata code, city and state.
+
+```{r airportNodes}
+q1 <- 'CREATE (b:airports {iata: {iata}, city: {city}, state: {state}})'
+
+t = newTransaction(graph)
+
+for(i in 1:length(airports$label)) {
+     iata = airports[i,]$label 
+     city = airports[i,]$city
+     state = airports[i,]$state
+     appendCypher(t, q1, iata = iata, city = city, state = state)
+}
+commit(t)
+```
+
+Next, we create departure relationships between the flights and airport nodes.
+
+```{r departureRelationship}
+q2 = '
+MATCH (a:flights {flight:{flight}}), (b:airports {iata:{depart}}) 
+CREATE (b) -[r:departs {takeoff:{takeoff}}] -> (a)
+'
+
+t = newTransaction(graph)
+for(i in 1:length(flights$flight)) {
+  depart = flights[i,]$depart
+  flight = flights[i,]$flight
+  takeoff = flights[i,]$takeoff
+  appendCypher(t, q2, depart = depart, takeoff = takeoff, flight = flight)
+}
+commit(t)
+```
+
+We also create arrival relationships between the flights and airport nodes.
+
+```{r arrivalRelationship}
+q3 = '
+MATCH (a:flights {flight:{flight}}), (b:airports {iata:{arrive}}) 
+CREATE (a) -[r:arrivesAt {landing:{landing}}] -> (b)
+'
+
+t = newTransaction(graph)
+for(i in 1:length(flights$flight)) {
+  arrive = flights[i,]$arrive
+  flight = flights[i,]$flight
+  landing = flights[i,]$landing
+  appendCypher(t, q3, arrive = arrive, landing = landing, flight = flight)
+}
+commit(t)
+```
+
+The resulting graph network looks as follows:
+
+![](network.png)
+
+There are advantages and disadvantages to relational databases versus NoSQL databases. The biggest advantage for relational databases is that the technology is much more advanced and lends well to analyses, but queries may require many joins that slow down processing. NoSQL graph databases have faster and more direct queries, but since this technology is more recent, there are fewer tools for analyses.

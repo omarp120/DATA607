@@ -1,0 +1,42 @@
+---
+title: "DATA 607: Week 2 - Movie Ratings"
+name: Omar Pineda
+output: html_document
+---
+
+I'll be loading data from a Postgres database that I created called Movies. I created my source .CSV file in MSExcel and created the Ratings table in Postgres using pgAdmin 4. I brought the data from the .CSV file into my Ratings table using pgAdmin's import feature.
+
+Here, I'll connect to my PostgreSQL database and load the information from the Rating's table into an R dataframe.
+
+```{r PostgreSQL-Connect}
+library(RPostgreSQL)
+library(TTR)
+dbname <- "Movies"
+dbuser <- "postgres"
+dbpass <- "postgres"
+dbhost <- "localhost"
+dbport <- 5432
+drv <- dbDriver("PostgreSQL")
+con <- dbConnect(drv, host=dbhost, port=dbport, dbname=dbname,user=dbuser, password=dbpass)
+query <- dbSendQuery(con, query <- "SELECT * FROM public.ratings")
+ratings <- fetch(query, n=-1)
+ratings
+```
+
+Next, I'll query a table with the average rating for each movie.
+
+```{r avgRating}
+query2 <- query2 <- dbSendQuery(con, query <- "SELECT title, AVG(CAST(rating AS FLOAT)) AS    avg_score
+FROM public.ratings
+GROUP BY title;")
+avgScores <- fetch(query2, n=-1)
+avgScores
+```
+
+Finally, I'll plot the average scores for each movies. 'A Star is Born' has the highest average rating while 'If Beale Street Could Talk' has the lowest for those who participated in my survey.
+
+```{r boxplot}
+library(ggplot2)
+p <- ggplot(data=avgScores, aes(x=title, y=avg_score)) + geom_bar(stat="identity")
+p
+```

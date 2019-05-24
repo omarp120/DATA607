@@ -1,0 +1,34 @@
+---
+title: "Week11_Recommender Systems_OP"
+author: "Omar Pineda"
+date: "4/9/2019"
+output: html_document
+---
+
+Discussion: Recommender Systems
+
+Your task is to analyze an existing recommender system that you find interesting.  You should:
+
+Perform a Scenario Design analysis as described below.  Consider whether it makes sense for your selected recommender system to perform scenario design twice, once for the organization (e.g. Amazon.com) and once for the organization's customers. Attempt to reverse engineer what you can about the site, from the site interface and any available information that you can find on the Internet or elsewhere. Include specific recommendations about how to improve the site's recommendation capabilities going forward. Create your report using an R Markdown file, and create a discussion thread with a link to the GitHub repo where your Markdown file notebook resides.  You are not expected to need to write code for this discussion assignment.
+
+In this discussion, I'll look at Rakuten, a Japanese e-commerce company, and a content-based offer/coupon recommender system. I found this interesting article from Rakuten's Institute of Technology: http://sigir-ecom.weebly.com/uploads/1/0/2/9/102947274/paper_20.pdf
+
+1. Who are your target users?
+
+The target users are Rakuten's 90 million registered users.
+
+2. What are their key goals?
+
+Their key goal is to purchase their preferred brands at the most discounted prices from merchants, and also accrue points that they can use for other purchases in the Rakuten ecosystem.
+
+3. How can you help them accomplish those goals?
+
+Rakuten can help them accomplish this goal by sending users a curated daily digest with offers for their favorite brands, and also present deals to them on the front page of their website.
+
+4. Reverse engineer:
+
+Rakuten seems to use a popularity based recommender system as it presents the most popular deals and coupons across its users to the "new" user. This is because they have yet to learn much from the user. Millions of customers receive the same offers regardless of their browsing or purchase history. Similarly, some new items may have insufficient click history, so we wouldn't know what type of users to advertise it to. Their site has category groupings based on items that have been purchased by similar users.
+
+5. Recommendations:
+
+Rakuten could use content based filtering to "recommend items based on a comparison between the content of the items and a user profile." For completely new items, they can market deals and coupons for them that are similar to those of similar items in their marketplace. They can use the available demographics of a new user such as age and geographic location to market to them coupons and deals that similar users clicked through.

@@ -1,0 +1,58 @@
+---
+title: "Week6_OpioidProject_OP"
+author: "Omar Pineda"
+date: "2/25/2019"
+output: html_document
+---
+
+In this project, we'll look at opioid claims data for Medicaid members as reported by the Centers for Medicare and Medicaid Services. This will give us insight into which U.S. regions have the most prevalent prescription rates, which could be an indicator for where there may be more opioid abuse.
+
+First we stack tables since our data is presented in separate tables for each year (2013-2016).
+
+```{r tidy1}
+library(plyr)
+library(stringr)
+library(tidyr)
+paths <- dir(getwd(), pattern = "\\.csv$", full.names = TRUE)
+names(paths) <- basename(paths)
+opioid <- ldply(paths, read.csv, stringsAsFactors = FALSE)
+head(opioid)
+colnames(opioid)[1] <- "year" #renames id column to year
+opioid$year <- str_extract(opioid$year, "^.{4}") #removes ".csv" from year
+opioid$year <- as.numeric(opioid$year)
+head(opioid)
+```
+
+Next, we tidy our data by creating a "type of claim" variable and coverting our table from wide to tall.
+
+```{r tidy2}
+library(dplyr)
+tidyOp <- select(opioid, year:Managed.Care.Overall.Claims) %>%
+          gather("TypeOfClaim", "claims", Opioid.Claims:Managed.Care.Overall.Claims)
+head(tidyOp)
+tidyOp$claims <- as.numeric(gsub(",","",tidyOp$claims)) #converts claims to numeric after translating out commas
+head(tidyOp)
+```
+
+We also designate which region each state is in for our regional analysis.
+
+```{r region}
+northeast <- c("CT","ME","MA","NH","RI","VT","NJ","NY","PA")
+midwest <- c("IL","IN","MI","OH","WI","IA","KS","MN","MO","NE","ND","SD")
+south <- c("DE","FL","GA","MD","NC","SC","VA","DC","WV","AL","KY","MS","TN","AR","LA","OK","TX")
+west <- c("AZ","CO","ID","MT","NV","NM","UT","WY","AK","HI","CA","OR","WA")
+tidyOp$region[tidyOp$State.Abbreviation %in% northeast] <- "northeast"
+tidyOp$region[tidyOp$State.Abbreviation %in% midwest] <- "midwest"
+tidyOp$region[tidyOp$State.Abbreviation %in% south] <- "south"
+tidyOp$region[tidyOp$State.Abbreviation %in% west] <- "west"
+head(tidyOp)
+```
+
+Finally, we analyze opioid prescription levels by plotting claims by region and by year from 2013-2016.
+
+```{r analysis}
+library(ggplot2)
+ggplot(tidyOp, aes(x = year, y = claims)) + geom_bar(stat = "identity", aes(color = TypeOfClaim)) + xlab("Year") + ylab("Number of Claims") + facet_grid(~region)
+```
+
+From this chart, we can look at the NA region, which is the national level of opioid claims, and see that opioid prescriptions have increased year over year from 2013-2016. Opioid prescriptions have also increased for every consecutive year within each region of the U.S. The South seems to have the highest level of opioid prescriptions compared to other regions. These results are in line with what has recently brought on increased awareness for the opioid epidemic. 
